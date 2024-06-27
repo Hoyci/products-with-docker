@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My App</title>
+  </head>
+  <body class="container mx-auto p-4">
+    <header class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold mb-4">Lista de produtos</h1>
+      <button
+        id="createProductBtn"
+        class="bg-gray-100 p-2 rounded-md hover:opacity-70"
+      >
+        Criar novo produto
+      </button>
+    </header>
+    <main>
+      <div
+        id="data"
+        class="p-4 bg-gray-100 rounded shadow flex flex-col gap-3"
+      ></div>
+    </main>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
