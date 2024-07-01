@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  server:
+    image: hoyci98/products:latest
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    networks:
+      - productsStackNetwork
+    volumes:
+      - myappdata:/var/lib/myappnode/data
+    environment:
+      NODE_ENV: prod
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+  db:
+    image: bitnami/postgresql:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./server/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - productsStackNetwork
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8888:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  productsStackNetwork:
+    driver: overlay
+
+volumes:
+  myappdata:
+  dbdata:
+#  docker swarm join --token SWMTKN-1-0ldftkznfvz6plvt8bim98j8secuoq6rmm20unn9yc5u2n4jfc-5wpfu392zpnjf7oijde3s9n3t 192.168.65.3:2377
