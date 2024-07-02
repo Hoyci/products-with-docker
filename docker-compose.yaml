@@ -36,19 +36,6 @@ services:
       placement:
         constraints:
           - node.role == manager
-          - node.labels.db == primary
-
-  visualizer:
-    image: dockersamples/visualizer:stable
-    ports:
-      - "8888:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
 
 networks:
   productsStackNetwork:
