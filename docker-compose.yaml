@@ -38,25 +38,6 @@ services:
           - node.role == manager
           - node.labels.db == primary
 
-  db_backup:
-    image: bitnami/postgresql:latest
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5433:5432"
-    volumes:
-      - ./server/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - dbdata:/var/lib/postgresql/data
-    networks:
-      - productsStackNetwork
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-          - node.labels.db == backup
-
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
@@ -67,8 +48,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == worker
-          - node.labels.visualizer == true
+          - node.role == manager
 
 networks:
   productsStackNetwork:
