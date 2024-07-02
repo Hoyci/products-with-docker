@@ -18,6 +18,7 @@ services:
       placement:
         constraints:
           - node.role == worker
+
   db:
     image: bitnami/postgresql:latest
     environment:
@@ -34,7 +35,28 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == worker
+          - node.role == manager
+          - node.labels.db == primary
+
+  db_backup:
+    image: bitnami/postgresql:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./server/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - productsStackNetwork
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.db == backup
+
   visualizer:
     image: dockersamples/visualizer:stable
     ports:
@@ -42,8 +64,11 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     deploy:
+      replicas: 1
       placement:
-        constraints: [node.role == manager]
+        constraints:
+          - node.role == worker
+          - node.labels.visualizer == true
 
 networks:
   productsStackNetwork:
@@ -52,4 +77,3 @@ networks:
 volumes:
   myappdata:
   dbdata:
-#  docker swarm join --token SWMTKN-1-0ldftkznfvz6plvt8bim98j8secuoq6rmm20unn9yc5u2n4jfc-5wpfu392zpnjf7oijde3s9n3t 192.168.65.3:2377
