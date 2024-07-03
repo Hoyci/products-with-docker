@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   server:
-    image: hoyci98/products:latest
+    image: hoyci98/products-server:latest
     depends_on:
       - db
     ports:
