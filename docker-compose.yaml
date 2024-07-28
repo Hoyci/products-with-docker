@@ -1,28 +1,6 @@
 version: "3.8"
 
 services:
-  server:
-    build:
-      context: ./server
-      dockerfile: dockerfile
-    networks:
-      - productsStackNetwork
-    volumes:
-      - myappdata:/var/lib/myappnode/data
-    environment:
-      NODE_ENV: prod
-
-  client:
-    build:
-      context: ./client
-      dockerfile: dockerfile
-    depends_on:
-      - server
-    ports:
-      - "3000:80"
-    networks:
-      - productsStackNetwork
-
   db:
     image: bitnami/postgresql:latest
     environment:
@@ -30,14 +8,39 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - ./server/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - dbdata:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     networks:
-      - productsStackNetwork
+      - backend
+
+  server:
+    build:
+      context: ./server
+      dockerfile: dockerfile
+    environment:
+      PORT: 4000
+      NODE_ENV: prod
+    ports:
+      - "4000:4000"
+    networks:
+      - backend
+    depends_on:
+      - db
+
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - frontend
+      - backend
 
 networks:
-  productsStackNetwork:
-    driver: bridge
+  backend:
+  frontend:
 
 volumes:
-  myappdata:
-  dbdata:
+  db-data:

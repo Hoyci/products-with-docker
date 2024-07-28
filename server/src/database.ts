@@ -41,6 +41,7 @@ export const listProducts = async (req: Request, res: Response) => {
 
 export const deleteProduct = async (req: Request, res: Response) => {
   const { id: productId } = req.params;
+
   await pool.query("DELETE FROM products WHERE id = $1", [productId]);
 
   res.status(201).send({
