@@ -6,7 +6,7 @@ function createProduct() {
     price: Math.floor(Math.random() * 990) + 10,
   };
 
-  fetch("http://localhost:3000/", {
+  fetch("http://server:3000/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -25,7 +25,7 @@ function createProduct() {
 function deleteProduct(event) {
   const productId = event.target.dataset.id;
 
-  fetch(`http://localhost:3000/${productId}`, {
+  fetch(`http://server:3000/${productId}`, {
     method: "DELETE",
   })
     .then(() => {
@@ -74,7 +74,7 @@ function mountProducts() {
 }
 
 function fetchData() {
-  fetch("http://localhost:3000")
+  fetch("http://server:3000")
     .then((response) => response.json())
     .then((data) => {
       const { products } = data;
